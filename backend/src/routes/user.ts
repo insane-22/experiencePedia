@@ -67,6 +67,7 @@ userRouter.post("/signin", async (c) => {
   const existingUser = await prisma.user.findUnique({
     where: {
       email: body.email,
+      password: body.password
     },
   });
   if (!existingUser) {
