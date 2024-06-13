@@ -5,6 +5,7 @@
     "postinstall": "prisma generate --no-engine"
   },
   "dependencies": {
+    "@insane_22/experiencepedia-common": "^1.0.0",
     "@prisma/client": "^5.15.0",
     "@prisma/extension-accelerate": "^1.1.0",
     "hono": "^4.4.4",

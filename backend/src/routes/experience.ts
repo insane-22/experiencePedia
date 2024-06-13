@@ -4,6 +4,7 @@ import { verify } from "hono/jwt";
 import { Variables } from "../variables";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import {createPostInput,updatePostInput} from "@insane_22/experiencepedia-common"
 
 const experienceRouter = new Hono<{
   Bindings: Bindings;
@@ -28,15 +29,15 @@ experienceRouter.use(async (c, next) => {
 
 experienceRouter.post("/", async (c) => {
   const body = await c.req.json();
+  const { success } = createPostInput.safeParse(body);
+  if (!success) {
+    c.status(400);
+    return c.json({ error: "invalid input" });
+  }
   const userId = c.get("userId");
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-
-  if (!body.title || !body.description) {
-    c.status(401);
-    return c.json({ error: "Title and Description are required" });
-  }
 
   const post = await prisma.post.create({
     data: {
@@ -55,6 +56,11 @@ experienceRouter.post("/", async (c) => {
 
 experienceRouter.put("/", async (c) => {
   const body = await c.req.json();
+  const { success } = updatePostInput.safeParse(body);
+  if (!success) {
+    c.status(400);
+    return c.json({ error: "invalid input" });
+  }
   const userId = c.get("userId");
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
